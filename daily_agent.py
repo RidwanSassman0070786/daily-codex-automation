@@ -12,8 +12,7 @@ from pathlib import Path
 
 # Check if required packages are available
 try:
-    from agents import Agent, Runner, set_default_openai_api
-    from agents.mcp import MCPServerStdio
+    from agents import Agent, Runner, set_default_openai_api, WebSearchTool    from agents.mcp import MCPServerStdio
 except ImportError:
     print("Error: Required packages not installed. Run: pip install openai openai-agents")
     sys.exit(1)
@@ -62,9 +61,30 @@ async def run_daily_automation():
                     Save all outputs to ./daily-automation-output/report-{DATE_STR}.md
                     
                     Always call Codex MCP with {{"approval-policy":"never","sandbox":"workspace-write"}}.
-                    """
+                    Execute these tasks:
+                    1. Search LinkedIn for new remote jobs matching these roles:
+                       - Solution Architect (remote, 20+ hours/week)
+                       - AI/ML Architect (remote)
+                       - Senior Data Scientist (remote)
+                       - DevOps Engineer (remote)
+                       - Cloud Architect (AWS/Azure/GCP, remote)
+                       - Data Analyst (remote)
+                    2. Filter for: Remote positions, posted in last 24 hours, global opportunities
+                    3. Save job listings to ./daily-automation-output/jobs-{DATE_STR}.md
+                    4. Analyze the repository structure and create a summary
+                    5. Generate a daily status report
+                    6. List any TODOs or issues found
+                    7. Create recommendations for improvements
+                    
+                    For LinkedIn job search:
+                    - Use web search capabilities to find LinkedIn job postings
+                    - Look for keywords: 'Solution Architect remote', 'AI Architect remote', 'Data Scientist remote'
+                    - Focus on positions offering remote work from anywhere
+                    - Prioritize roles with 20+ hours/week or full-time
+                    - Save job title, company, location, posting date, and application link                    """
                 ),
                 model="gpt-5",
+                                tools=[WebSearchTool()],
                 mcp_servers=[codex_mcp_server],
             )
             
